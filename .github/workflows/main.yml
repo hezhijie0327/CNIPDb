@@ -1,4 +1,4 @@
-# Current Version: 1.1.0
+# Current Version: 1.1.1
 
 name: Build & Release hezhijie0327/CNIPDb
 
@@ -21,7 +21,7 @@ jobs:
                 go-version: '>=1.18.0'
             - name: Step 3 - Build CNIPDb
               run: |
-                  export PATH=${GOROOT}/bin:$PATH && curl -s "https://raw.githubusercontent.com/hezhijie0327/CNIPDb/source/release.sh" | sed "s/{GEOLITE2\_TOKEN}/${{ secrets.GEOLITE2_TOKEN }}/g;s/{IP2LOCATION\_TOKEN}/${{ secrets.IP2LOCATION_TOKEN }}/g" | sudo bash
+                  go version && export PATH=/opt/hostedtoolcache/go/1.19.3/x64:$PATH && curl -s "https://raw.githubusercontent.com/hezhijie0327/CNIPDb/source/release.sh" | sed "s/{GEOLITE2\_TOKEN}/${{ secrets.GEOLITE2_TOKEN }}/g;s/{IP2LOCATION\_TOKEN}/${{ secrets.IP2LOCATION_TOKEN }}/g" | sudo bash
             - name: Step 4 - Release CNIPDb
               run: |
                   curl -s "https://raw.githubusercontent.com/hezhijie0327/Toolkit/main/Git.sh" > "/tmp/Git.sh"
