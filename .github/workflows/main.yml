@@ -1,4 +1,4 @@
-# Current Version: 1.1.6
+# Current Version: 1.1.7
 
 name: Build & Release hezhijie0327/CNIPDb
 
@@ -23,7 +23,7 @@ jobs:
               run: |
                   git clone --depth 1 "https://github.com/zhanhb/cidr-merger" && cd ./cidr-merger && go install . && cd .. && rm -rf ./cidr-merger
                   git clone --depth 1 "https://github.com/Loyalsoldier/geoip" && cd ./geoip && go install . && cd .. && rm -rf ./geoip
-                  curl -s "https://raw.githubusercontent.com/hezhijie0327/CNIPDb/source/release.sh" | sed "s/{GEOLITE2\_TOKEN}/${{ secrets.GEOLITE2_TOKEN }}/g;s/{IP2LOCATION\_TOKEN}/${{ secrets.IP2LOCATION_TOKEN }}/g" | sudo bash
+                  curl -s "https://raw.githubusercontent.com/hezhijie0327/CNIPDb/source/release.sh" | sed "s/{GEOLITE2\_TOKEN}/${{ secrets.GEOLITE2_TOKEN }}/g;s/{IP2LOCATION\_TOKEN}/${{ secrets.IP2LOCATION_TOKEN }}/g;s/{IPINFOIO\_TOKEN}/${{ secrets.IPINFOIO_TOKEN }}/g" | sudo bash
             - name: Step 4 - Release CNIPDb
               run: |
                   curl -s "https://raw.githubusercontent.com/hezhijie0327/Toolkit/main/Git.sh" > "/tmp/Git.sh"
