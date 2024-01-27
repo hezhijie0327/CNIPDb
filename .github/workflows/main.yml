@@ -1,4 +1,4 @@
-# Current Version: 1.1.7
+# Current Version: 1.1.8
 
 name: Build & Release hezhijie0327/CNIPDb
 
@@ -13,9 +13,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Step 1 - Checkout
-              uses: actions/checkout@v3.1.0
+              uses: actions/checkout@v4
             - name: Step 2 - Setup Go environment
-              uses: actions/setup-go@v3.3.1
+              uses: actions/setup-go@v5
               with:
                 check-latest: true
                 go-version: '>=1.18.0'
