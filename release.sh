@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Current Version: 2.1.1
+# Current Version: 2.1.2
 
 ## How to get and use?
 # git clone "https://github.com/hezhijie0327/CNIPDb.git" && bash ./CNIPDb/release.sh
@@ -60,6 +60,21 @@ function GetDataFromBGP() {
     cat ./bgp_country_ipv4.tmp | sort | uniq | cidr-merger -s > ../cnipdb_bgp/country_ipv4.txt
     cat ./bgp_country_ipv6.tmp | sort | uniq | cidr-merger -s > ../cnipdb_bgp/country_ipv6.txt
     cat ../cnipdb_bgp/country_ipv4.txt ../cnipdb_bgp/country_ipv6.txt > ../cnipdb_bgp/country_ipv4_6.txt
+}
+# Get Data from BTPanel
+function GetDataFromBTPanel() {
+    btpanel_url=(
+        "https://download.bt.cn/cnlist.json"
+    )
+    for btpanel_url_task in "${!btpanel_url[@]}"; do
+        curl -s --connect-timeout 15 "${btpanel_url[$btpanel_url_task]}" >> ./btpanel_country_ipv4_6.tmp
+    done
+    btpanel_country_ipv4_data=($(cat ./btpanel_country_ipv4_6.tmp | sed 's/]], /\n/g' | sed "s/\], \[/-/g" | tr -d '[ ]' | sed 's/,/./g' | sort | uniq | awk "{ print $2 }"))
+    for btpanel_country_ipv4_data_task in "${!btpanel_country_ipv4_data[@]}"; do
+        echo "${btpanel_country_ipv4_data[$btpanel_country_ipv4_data_task]}" >> ./btpanel_country_ipv4.tmp
+    done
+    mkdir ../cnipdb_btpanel
+    cat ./btpanel_country_ipv4.tmp | sort | uniq | cidr-merger -s > ../cnipdb_btpanel/country_ipv4.txt
 }
 # Get Data from DBIP
 function GetDataFromDBIP() {
@@ -204,6 +219,27 @@ function GetDataFromIPinfoio() {
     cat ./ipinfoio_country_ipv6.tmp | sort | uniq | cidr-merger -s > ../cnipdb_ipinfoio/country_ipv6.txt
     cat ../cnipdb_ipinfoio/country_ipv4.txt ../cnipdb_ipinfoio/country_ipv6.txt > ../cnipdb_ipinfoio/country_ipv4_6.txt
 }
+function GetDataFromIPdeny() {
+    ipdeny_url=(
+        "http://www.ipdeny.com/ipblocks/data/aggregated/cn-aggregated.zone"
+        "http://www.ipdeny.com/ipv6/ipaddresses/aggregated/cn-aggregated.zone"
+    )
+    for ipdeny_url_task in "${!ipdeny_url[@]}"; do
+        curl -s --connect-timeout 15 "${ipdeny_url[$ipdeny_url_task]}" >> ./ipdeny_country_ipv4_6.tmp
+    done
+    ipdeny_country_ipv4_data=($(cat ./ipdeny_country_ipv4_6.tmp | grep -v "\:\|\#" | grep '.' | sort | uniq | awk "{ print $2 }"))
+    ipdeny_country_ipv6_data=($(cat ./ipdeny_country_ipv4_6.tmp | grep -v "\.\|\#" | grep ':' | sort | uniq | awk "{ print $2 }"))
+    for ipdeny_country_ipv4_data_task in "${!ipdeny_country_ipv4_data[@]}"; do
+        echo "${ipdeny_country_ipv4_data[$ipdeny_country_ipv4_data_task]}" >> ./ipdeny_country_ipv4.tmp
+    done
+    for ipdeny_country_ipv6_data_task in "${!ipdeny_country_ipv6_data[@]}"; do
+        echo "${ipdeny_country_ipv6_data[$ipdeny_country_ipv6_data_task]}" >> ./ipdeny_country_ipv6.tmp
+    done
+    mkdir -p ../cnipdb_ipdeny
+    cat ./ipdeny_country_ipv4.tmp | sort | uniq | cidr-merger -s > ../cnipdb_ipdeny/country_ipv4.txt
+    cat ./ipdeny_country_ipv6.tmp | sort | uniq | cidr-merger -s > ../cnipdb_ipdeny/country_ipv6.txt
+    cat ../cnipdb_ipdeny/country_ipv4.txt ../cnipdb_ipdeny/country_ipv6.txt > ../cnipdb_ipdeny/country_ipv4_6.txt
+}
 # Get Data from IPIPdotNET
 function GetDataFromIPIPdotNET() {
     ipipdotnet_url=(
@@ -251,6 +287,21 @@ function GetDataFromIPtoASN() {
     cat ./iptoasn_country_ipv6.tmp | sort | uniq | cidr-merger -s > ../cnipdb_iptoasn/country_ipv6.txt
     cat ../cnipdb_iptoasn/country_ipv4.txt ../cnipdb_iptoasn/country_ipv6.txt > ../cnipdb_iptoasn/country_ipv4_6.txt
 }
+# Get Data from OpenIPDB
+function GetDataFromOpenIPDB() {
+    openipdb_url=(
+        "https://raw.githubusercontent.com/metowolf/iplist/master/data/country/CN.txt"
+    )
+    for openipdb_url_task in "${!openipdb_url[@]}"; do
+        curl -s --connect-timeout 15 "${openipdb_url[$openipdb_url_task]}" >> ./openipdb_country_ipv4_6.tmp
+    done
+    openipdb_country_ipv4_data=($(cat ./openipdb_country_ipv4_6.tmp | sort | uniq | awk "{ print $2 }"))
+    for openipdb_country_ipv4_data_task in "${!openipdb_country_ipv4_data[@]}"; do
+        echo "${openipdb_country_ipv4_data[$openipdb_country_ipv4_data_task]}" >> ./openipdb_country_ipv4.tmp
+    done
+    mkdir -p ../cnipdb_openipdb
+    cat ./openipdb_country_ipv4.tmp | sort | uniq | cidr-merger -s > ../cnipdb_openipdb/country_ipv4.txt
+}
 # Get Data from VXLINK
 function GetDataFromVXLINK() {
     vxlink_url=(
@@ -279,6 +330,8 @@ function GetDataFromVXLINK() {
 EnvironmentPreparation
 # Call GetDataFromBGP
 GetDataFromBGP
+# Call GetDataFromBTPanel
+GetDataFromBTPanel
 # Call GetDataFromDBIP
 GetDataFromDBIP
 # Call GetDataFromGeoLite2
@@ -287,12 +340,16 @@ GetDataFromGeoLite2
 GetDataFromIANA
 # Call GetDataFromIP2Location
 GetDataFromIP2Location
+# Cal GetDataFromIPdeny
+GetDataFromIPdeny
 # Call GetDataFromIPinfoio
 GetDataFromIPinfoio
 # Call GetDataFromIPIPdotNET
 GetDataFromIPIPdotNET
 # Call GetDataFromIPtoASN
 GetDataFromIPtoASN
+# Call GetDataFromOpenIPDB
+GetDataFromOpenIPDB
 # Call GetDataFromVXLINK
 GetDataFromVXLINK
 # Call EnvironmentCleanup
