@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Current Version: 2.1.2
+# Current Version: 2.1.3
 
 ## How to get and use?
 # git clone "https://github.com/hezhijie0327/CNIPDb.git" && bash ./CNIPDb/release.sh
@@ -245,6 +245,7 @@ function GetDataFromIPIPdotNET() {
     ipipdotnet_url=(
         "https://cdn.ipip.net/17mon/country.zip"
         "https://raw.githubusercontent.com/17mon/china_ip_list/master/china_ip_list.txt"
+        "https://raw.githubusercontent.com/zhufengme/block_cn_files/refs/heads/master/cn_ip_list.txt"
     )
     for ipipdotnet_url_task in "${!ipipdotnet_url[@]}"; do
         if [ "$(echo ${ipipdotnet_url[$ipipdotnet_url_task]} | grep '.zip$')" ]; then
