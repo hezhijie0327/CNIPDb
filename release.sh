@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Current Version: 2.1.3
+# Current Version: 2.1.4
 
 ## How to get and use?
 # git clone "https://github.com/hezhijie0327/CNIPDb.git" && bash ./CNIPDb/release.sh
@@ -17,7 +17,7 @@ function EnvironmentPreparation() {
 }
 # Environment Cleanup
 function EnvironmentCleanup() {
-    ZJDBIP_SOURCE=($(ls ../ | grep 'cnipdb_' | grep -v "cnipdb_zjdb" | awk "{ print $2 }"))
+    ZJDBIP_SOURCE=($(ls ../ | grep 'cnipdb_' | grep -v "cnipdb_zjdb\|cnipdb_btpanel" | awk "{ print $2 }"))
     ZJDBIP_SOURCE_IPv4="" && ZJDBIP_SOURCE_IPv6="" && for ZJDBIP_SOURCE_TASK in "${!ZJDBIP_SOURCE[@]}"; do
         if [ -f "../${ZJDBIP_SOURCE[$ZJDBIP_SOURCE_TASK]}/country_ipv4.txt" ]; then
             ZJDBIP_SOURCE_IPv4="${ZJDBIP_SOURCE_IPv4}../${ZJDBIP_SOURCE[$ZJDBIP_SOURCE_TASK]}/country_ipv4.txt "
