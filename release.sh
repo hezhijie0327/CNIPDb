@@ -30,10 +30,78 @@ function EnvironmentCleanup() {
     cat ${ZJDBIP_SOURCE_IPv4} | sort | uniq | cidr-merger -s > ../cnipdb_zjdb/country_ipv4.txt
     cat ${ZJDBIP_SOURCE_IPv6} | sort | uniq | cidr-merger -s > ../cnipdb_zjdb/country_ipv6.txt
     cat ../cnipdb_zjdb/country_ipv4.txt ../cnipdb_zjdb/country_ipv6.txt > ../cnipdb_zjdb/country_ipv4_6.txt
-    GIT_STATUS=($(git status -s | grep "A\|M\|\?" | grep 'country_ipv' | cut -d ' ' -f 3 | grep "txt" | cut -d '/' -f 2-3 | sed 's/cnipdb_//g;s/country_//g;s/.txt//g' | awk "{ print $2 }"))
-    for GIT_STATUS_TASK in "${!GIT_STATUS[@]}"; do
-        geoip convert "https://raw.githubusercontent.com/hezhijie0327/CNIPDb/main/script/${GIT_STATUS[$GIT_STATUS_TASK]}.json"
+
+    # Get all changed files with their full paths (run from parent directory)
+    IPV4_FILES=($(git -C .. status -s | grep "country_ipv4.txt" | awk '{print $2}'))
+    IPV6_FILES=($(git -C .. status -s | grep "country_ipv6.txt" | awk '{print $2}'))
+    IPV4_6_FILES=($(git -C .. status -s | grep "country_ipv4_6.txt" | awk '{print $2}'))
+    
+    # Group changes by directory and IP type
+    declare -A DIR_CHANGES
+    
+    # Process IPv4 files
+    for FILE_PATH in "${IPV4_FILES[@]}"; do
+        if [[ -n "$FILE_PATH" ]]; then
+            # Extract directory name more robustly
+            DIR_PATH=$(echo "$FILE_PATH" | grep -o "cnipdb_[^/]*" | head -1)
+            DIR_NAME=$(echo "$DIR_PATH" | sed 's/cnipdb_//g')
+            if [[ -n "$DIR_NAME" && "$DIR_NAME" != ".." ]]; then
+                DIR_CHANGES["${DIR_NAME}:ipv4"]=1
+            fi
+        fi
     done
+    
+    # Process IPv6 files
+    for FILE_PATH in "${IPV6_FILES[@]}"; do
+        if [[ -n "$FILE_PATH" ]]; then
+            # Extract directory name more robustly
+            DIR_PATH=$(echo "$FILE_PATH" | grep -o "cnipdb_[^/]*" | head -1)
+            DIR_NAME=$(echo "$DIR_PATH" | sed 's/cnipdb_//g')
+            if [[ -n "$DIR_NAME" && "$DIR_NAME" != ".." ]]; then
+                DIR_CHANGES["${DIR_NAME}:ipv6"]=1
+            fi
+        fi
+    done
+    
+    # Process IPv4_6 files
+    for FILE_PATH in "${IPV4_6_FILES[@]}"; do
+        if [[ -n "$FILE_PATH" ]]; then
+            # Extract directory name more robustly
+            DIR_PATH=$(echo "$FILE_PATH" | grep -o "cnipdb_[^/]*" | head -1)
+            DIR_NAME=$(echo "$DIR_PATH" | sed 's/cnipdb_//g')
+            if [[ -n "$DIR_NAME" && "$DIR_NAME" != ".." ]]; then
+                DIR_CHANGES["${DIR_NAME}:ipv4_6"]=1
+            fi
+        fi
+    done
+
+    # Process each unique directory and IP type combination
+    for KEY in "${!DIR_CHANGES[@]}"; do
+        DIR_NAME="${KEY%:*}"
+        IP_TYPE="${KEY#*:}"
+
+        if [[ -n "$DIR_NAME" && -n "$IP_TYPE" && "$DIR_NAME" != ".." ]]; then
+            TMP_JSON=$(mktemp)
+
+            case "$IP_TYPE" in
+                "ipv4")
+                    sed "s|cnipdb_zjdb|cnipdb_${DIR_NAME}|g" ../script/ipv4.json > "$TMP_JSON"
+                    geoip convert -c "$TMP_JSON"
+                    ;;
+                "ipv6")
+                    sed "s|cnipdb_zjdb|cnipdb_${DIR_NAME}|g" ../script/ipv6.json > "$TMP_JSON"
+                    geoip convert -c "$TMP_JSON"
+                    ;;
+                "ipv4_6")
+                    sed "s|cnipdb_zjdb|cnipdb_${DIR_NAME}|g" ../script/ipv4_6.json > "$TMP_JSON"
+                    geoip convert -c "$TMP_JSON"
+                    ;;
+            esac
+
+            rm -f "$TMP_JSON"
+        fi
+    done
+
     cd .. && rm -rf ./Temp
 }
 # Get Data from BGP
