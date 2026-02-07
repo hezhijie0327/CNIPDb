@@ -1,0 +1,32 @@
+{
+  "input": [
+    {
+      "action": "add",
+      "args": {
+        "name": "cn",
+        "uri": "../cnipdb_vxlink/country_ipv6.txt"
+      },
+      "type": "text"
+    }
+  ],
+  "output": [
+    {
+      "action": "output",
+      "args": {
+        "onlyIPType": "ipv6",
+        "outputDir": "../cnipdb_vxlink",
+        "outputName": "country_ipv6.dat"
+      },
+      "type": "v2rayGeoIPDat"
+    },
+    {
+      "action": "output",
+      "args": {
+        "onlyIPType": "ipv6",
+        "outputDir": "../cnipdb_vxlink",
+        "outputName": "country_ipv6.mmdb"
+      },
+      "type": "maxmindMMDB"
+    }
+  ]
+}

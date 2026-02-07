@@ -1,0 +1,30 @@
+{
+  "input": [
+    {
+      "action": "add",
+      "args": {
+        "name": "cn",
+        "uri": "../cnipdb_zjdb/country_ipv4_6.txt"
+      },
+      "type": "text"
+    }
+  ],
+  "output": [
+    {
+      "action": "output",
+      "args": {
+        "outputDir": "../cnipdb_zjdb",
+        "outputName": "country_ipv4_6.dat"
+      },
+      "type": "v2rayGeoIPDat"
+    },
+    {
+      "action": "output",
+      "args": {
+        "outputDir": "../cnipdb_zjdb",
+        "outputName": "country_ipv4_6.mmdb"
+      },
+      "type": "maxmindMMDB"
+    }
+  ]
+}
