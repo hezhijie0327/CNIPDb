@@ -32,7 +32,7 @@ function EnvironmentCleanup() {
     cat ../cnipdb_zjdb/country_ipv4.txt ../cnipdb_zjdb/country_ipv6.txt > ../cnipdb_zjdb/country_ipv4_6.txt
     GIT_STATUS=($(git status -s | grep "A\|M\|\?" | grep 'country_ipv' | cut -d ' ' -f 3 | grep "txt" | cut -d '/' -f 2-3 | sed 's/cnipdb_//g;s/country_//g;s/.txt//g' | awk "{ print $2 }"))
     for GIT_STATUS_TASK in "${!GIT_STATUS[@]}"; do
-        geoip -c "https://raw.githubusercontent.com/hezhijie0327/CNIPDb/main/script/${GIT_STATUS[$GIT_STATUS_TASK]}.json"
+        geoip convert "https://raw.githubusercontent.com/hezhijie0327/CNIPDb/main/script/${GIT_STATUS[$GIT_STATUS_TASK]}.json"
     done
     cd .. && rm -rf ./Temp
 }
@@ -241,20 +241,13 @@ function GetDataFromIPdeny() {
 # Get Data from IPIPdotNET
 function GetDataFromIPIPdotNET() {
     ipipdotnet_url=(
-        "https://cdn.ipip.net/17mon/country.zip"
         "https://raw.githubusercontent.com/17mon/china_ip_list/master/china_ip_list.txt"
         "https://raw.githubusercontent.com/zhufengme/block_cn_files/refs/heads/master/cn_ip_list.txt"
     )
     for ipipdotnet_url_task in "${!ipipdotnet_url[@]}"; do
-        if [ "$(echo ${ipipdotnet_url[$ipipdotnet_url_task]} | grep '.zip$')" ]; then
-            curl ${CRUL_OPTION:--s --connect-timeout 15 -L} "${ipipdotnet_url[$ipipdotnet_url_task]}" >> ./ipipdotnet_${ipipdotnet_url_task}.zip
-            unzip -o -d . ./ipipdotnet_${ipipdotnet_url_task}.zip && rm -rf ./ipipdotnet_${ipipdotnet_url_task}.zip
-        else
-            curl ${CRUL_OPTION:--s --connect-timeout 15 -L} "${ipipdotnet_url[$ipipdotnet_url_task]}" >> ./ipipdotnet_country_ipv4_6_raw.tmp
-        fi
+        curl ${CRUL_OPTION:--s --connect-timeout 15 -L} "${ipipdotnet_url[$ipipdotnet_url_task]}" >> ./ipipdotnet_country_ipv4_6_raw.tmp
     done
     ipipdotnet_country_ipv4_data=(
-        $(cat ./country.txt | grep 'CN$' | cut -f 1 | sort | uniq | awk "{ print $2 }")
         $(cat ./ipipdotnet_country_ipv4_6_raw.tmp | grep -v "\:" | grep '.' | sort | uniq | awk "{ print $2 }")
     )
     for ipipdotnet_country_ipv4_data_task in "${!ipipdotnet_country_ipv4_data[@]}"; do
