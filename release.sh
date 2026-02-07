@@ -71,7 +71,7 @@ function GetDataFromBTPanel() {
     for btpanel_country_ipv4_data_task in "${!btpanel_country_ipv4_data[@]}"; do
         echo "${btpanel_country_ipv4_data[$btpanel_country_ipv4_data_task]}" >> ./btpanel_country_ipv4.tmp
     done
-    mkdir ../cnipdb_btpanel
+    mkdir -p ../cnipdb_btpanel
     cat ./btpanel_country_ipv4.tmp | sort | uniq | cidr-merger -s > ../cnipdb_btpanel/country_ipv4.txt
 }
 # Get Data from DBIP
