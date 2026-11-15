@@ -1,16 +1,16 @@
-# CNIPDb - 中国IP数据库
+# CNIPDb
 
 ## 项目简介
 
-CNIPDb是一个中国IP地址数据库聚合项目，从多个公开数据源收集中国IP地址段，并提供多种格式的输出，适用于不同的应用场景。
+CNIPDb是一个中国IP地址数据库聚合项目，从多个公开数据源收集中国IP地址段，并提供多种格式的输出，适用于不同的应用场景。开发规范见 [AGENTS.md](AGENTS.md)。
 
-### 功能特点
+## 特性
 
-- 🌐 **多数据源聚合**：从BGP、DB-IP、GeoLite2、IANA等多个权威数据源收集IP信息
-- 🔄 **自动更新**：通过GitHub Actions每日自动更新，确保数据时效性
-- 📦 **多种格式**：支持TXT、DAT（V2Ray）和MMDB（MaxMind）三种输出格式
-- 🌍 **双协议支持**：同时支持IPv4和IPv6地址段
-- 🚀 **高效处理**：使用专业工具进行CIDR块合并和优化
+- **多数据源聚合**：从BGP、DB-IP、GeoLite2、IANA等多个权威数据源收集IP信息
+- **自动更新**：通过GitHub Actions每日自动更新，确保数据时效性
+- **多种格式**：支持TXT、DAT（V2Ray）和MMDB（MaxMind）三种输出格式
+- **双协议支持**：同时支持IPv4和IPv6地址段
+- **高效处理**：使用专业工具进行CIDR块合并和优化
 
 ## 文件下载
 
@@ -38,7 +38,7 @@ CNIPDb是一个中国IP地址数据库聚合项目，从多个公开数据源收
 
 简单的CIDR表示法，每行一个地址段：
 
-```
+```text
 1.2.3.0/24
 2001:db8::/32
 ```
@@ -60,7 +60,7 @@ MaxMind数据库格式：
 
 ## 项目结构
 
-```
+```text
 CNIPDb/
 ├── release.sh          # 主构建脚本
 ├── script/             # JSON配置模板
@@ -77,6 +77,6 @@ CNIPDb/
     └── main.yml         # 自动化工作流
 ```
 
-## 许可证
+## License
 
-本项目采用Apache License 2.0 with Commons Clause v1.0许可证 - 详见[LICENSE](LICENSE)文件
+[Apache License 2.0 with Commons Clause v1.0](LICENSE)
