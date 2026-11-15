@@ -17,10 +17,13 @@ jobs:
                 check-latest: true
                 go-version: '>=1.18.0'
             - name: Step 3 - Build CNIPDb
+              env:
+                  GEOLITE2_TOKEN: ${{ secrets.GEOLITE2_TOKEN }}
+                  IP2LOCATION_TOKEN: ${{ secrets.IP2LOCATION_TOKEN }}
+                  IPINFOIO_TOKEN: ${{ secrets.IPINFOIO_TOKEN }}
               run: |
-                  git clone --depth 1 "https://github.com/zhanhb/cidr-merger" && cd ./cidr-merger && go install . && cd .. && rm -rf ./cidr-merger
                   git clone --depth 1 "https://github.com/Loyalsoldier/geoip" && cd ./geoip && go install . && cd .. && rm -rf ./geoip
-                  cat release.sh | sed "s/{GEOLITE2\_TOKEN}/${{ secrets.GEOLITE2_TOKEN }}/g;s/{IP2LOCATION\_TOKEN}/${{ secrets.IP2LOCATION_TOKEN }}/g;s/{IPINFOIO\_TOKEN}/${{ secrets.IPINFOIO_TOKEN }}/g" | bash
+                  python3 build.py
             - name: Step 4 - Release CNIPDb
               run: |
                   curl -s "https://raw.githubusercontent.com/hezhijie0327/Toolkit/main/Git.sh" > "/tmp/Git.sh"

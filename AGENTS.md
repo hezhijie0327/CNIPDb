@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This repository collects and aggregates Chinese IP ranges from multiple sources, providing them in various formats for different use cases. See [README.md](README.md) for download links and format descriptions.
+CNIPDb collects and aggregates Chinese IP ranges from multiple sources, providing them in TXT, DAT (V2Ray) and MMDB (MaxMind) formats. See [README.md](README.md) for download links and format descriptions.
 
 ## HANDOVER.md
 
@@ -108,144 +108,74 @@ Family-wide Markdown rules, shared verbatim across all ZJ projects:
 ## Project
 
 CNIPDb is a data aggregation project that:
-- Collects IP data from multiple sources (BGP, DB-IP, GeoLite2, IANA, etc.)
-- Processes and merges the data into consolidated IP ranges
-- Outputs in multiple formats: TXT, DAT (V2Ray), and MMDB (MaxMind)
-- Supports both IPv4 and IPv6 addresses
+- Collects IP data from multiple sources (BGP, BTPanel, DB-IP, GeoLite2, IANA, IP2Location, IPdeny, IPinfo.io, IPIPdotNET, IPtoASN, OpenIPDB, VXLINK)
+- Merges adjacent/overlapping CIDR blocks natively in Python (`ipaddress.collapse_addresses`)
+- Outputs TXT, DAT (V2Ray) and MMDB (MaxMind) for IPv4, IPv6 and combined lists
 - Runs daily via GitHub Actions to keep data current
 
 ## Commands
 
 ### Full Build Process
 ```bash
-# Run the complete build process (downloads from all sources)
-./release.sh
+# Run the complete build (downloads from all sources, converts changed files)
+python3 build.py
 ```
 
-### Manual Data Collection
-The release script automatically handles:
-1. Environment preparation
-2. Data collection from all sources
-3. Processing and merging IP ranges
-4. Format conversion to DAT and MMDB
-5. Cleanup
+Token-protected sources read their credentials from environment variables:
+```bash
+GEOLITE2_TOKEN=... IP2LOCATION_TOKEN=... IPINFOIO_TOKEN=... python3 build.py
+```
 
 ### Testing Individual Sources
-To test data collection from a specific source, extract and run individual functions from release.sh:
+`build.py` is importable; each source is a standalone function:
 ```bash
-# Example: BGP data collection only
-EnvironmentPreparation
-GetDataFromBGP
-EnvironmentCleanup
+python3 -c "import build; build.get_data_from_bgp(); build.environment_cleanup()"
 ```
+
+## Architecture
+
+1. **Collection**: each `get_data_from_<source>()` downloads its URLs in parallel, extracts Chinese ranges and splits IPv4/IPv6.
+2. **Merge**: `merge()` collapses and sorts networks; `write_source()` writes `country_ipv4.txt`, `country_ipv6.txt`, `country_ipv4_6.txt` into `cnipdb_<source>/`.
+3. **Aggregation**: `environment_cleanup()` merges all sources (except `btpanel`) into `cnipdb_zjdb/`, then runs `geoip convert` for every source whose TXT files changed according to `git status`.
 
 ## Conventions
 
-### Shell Scripting (release.sh)
-1. Use snake_case for function and variable names
-2. Prefix functions with descriptive verbs (e.g., GetDataFrom)
-3. Use consistent indentation (4 spaces)
-4. Add descriptive comments for complex logic
-5. Quote all variables to handle spaces properly
-6. Use `local` for function-local variables
+### Python (build.py)
+1. snake_case for functions and variables; descriptive `get_data_from_<source>` names
+2. 4-space indentation, stdlib only (no pip dependencies)
+3. Downloads go through `download()`/`fetch()` so tests can inject fixtures
+4. Failed downloads return empty data; a source with no data writes empty files (like the original `cat | cidr-merger` redirects)
 
-### File Naming Conventions
-- Data directories: `cnipdb_<source>` (e.g., cnipdb_bgp, cnipdb_dbip)
-- Output files: `country_<ipv|ipv4|ipv6>.<format>`
-  - IPv4 only: `country_ipv4.txt`, `country_ipv4.dat`, `country_ipv4.mmdb`
-  - IPv6 only: `country_ipv6.txt`, `country_ipv6.dat`, `country_ipv6.mmdb`
-  - Combined: `country_ipv4_6.txt`, `country_ipv4_6.dat`, `country_ipv4_6.mmdb`
+### Gotchas
+- `geoip` embeds a `build_epoch` timestamp in MMDB output: two runs never produce byte-identical `.mmdb` files. Compare MMDB data with the epoch masked.
+- `geoip` exits non-zero on empty input ("entry CN has no prefix"); the build ignores that exit code, like the original.
+- `geoip convert` resolves the `../cnipdb_*` paths in `script/*.json` relative to `./Temp`; the config path passed to it must be absolute.
+- CIDR merging is done by `ipaddress`, not `cidr-merger`; output ordering is `(version, network_address, prefixlen)`, verified byte-identical to `cidr-merger -s`.
+- IP2Location IPv4-mapped IPv6 ranges (`::ffff:`) are dropped, like the original `grep -v '^::ffff:'`.
 
-### Configuration Files (JSON)
-- Use consistent indentation (2 spaces)
-- Include descriptive comments in the script that generates them
-- Maintain proper JSON structure with arrays for input/output configurations
-
-## Project structure
-
-- `cnipdb_*` directories: Output directories for different data sources
-- `script/`: JSON configuration templates for format conversion
-- `.github/workflows/main.yml`: CI/CD pipeline configuration
-- `release.sh`: Main build script that orchestrates the entire process
-
-## Data Processing Workflow
-
-1. **Collection Phase**:
-   - Download raw data from each source
-   - Extract Chinese IP ranges
-   - Separate IPv4 and IPv6 addresses
-
-2. **Processing Phase**:
-   - Sort and deduplicate IP ranges
-   - Merge adjacent/overlapping CIDR blocks
-   - Generate combined IPv4+IPv6 files
-
-3. **Output Phase**:
-   - Convert TXT files to DAT format (V2Ray)
-   - Convert TXT files to MMDB format (MaxMind)
-   - All files placed in respective `cnipdb_*` directories
-
-## Error Handling
-
-- All curl commands include timeout and error handling
-- Use temporary files and directories for processing
-- Cleanup is handled in the EnvironmentCleanup function
-- GitHub Actions includes error reporting via Git commit messages
+### File Naming
+- Data directories: `cnipdb_<source>`
+- Output files: `country_<ipv4|ipv6|ipv4_6>.<txt|dat|mmdb>`
 
 ## Dependencies
 
-External tools required:
-- `curl`: For downloading data
-- `cidr-merger`: Go tool for merging CIDR blocks
-- `geoip`: Go tool for converting between formats
-- `bc`: For numeric calculations (IP2Location)
-- `gzip`, `unzip`: For decompression
-- Standard Unix tools: `cut`, `grep`, `sort`, `uniq`, `awk`, `sed`
+- Python 3.9+ (stdlib only)
+- `geoip` (Go, github.com/Loyalsoldier/geoip) for DAT/MMDB conversion
+- `git` (change detection for conversions)
 
 ## Adding New Data Sources
 
-To add a new IP data source:
-
-1. Create a new function `GetDataFrom<SourceName>`
-2. Follow the existing pattern:
-   - Download data using curl
-   - Extract Chinese IP ranges
-   - Separate IPv4/IPv6 if needed
-   - Create output directory: `../cnipdb_<sourcename>`
-   - Generate sorted, deduplicated text files
-3. Add the function call to the main process in release.sh
-4. Update this documentation with the new source
+1. Add a `get_data_from_<source>()` function following the existing pattern
+2. Call it from `main()` and add the source name to `ZJDB_SOURCES` if it should feed `cnipdb_zjdb`
+3. Update this documentation and README.md
 
 ## GitHub Actions Integration
 
-The automated workflow:
-1. Triggers daily at midnight UTC
-2. Can be triggered manually
-3. Installs required Go tools
-4. Runs the complete build process
-5. Commits and pushes any changes
+- Daily at 00:00 UTC, plus manual `workflow_dispatch`
+- Installs the `geoip` Go tool, runs `python3 build.py`, commits and pushes changes
+- Secrets: `GEOLITE2_TOKEN`, `IP2LOCATION_TOKEN`, `IPINFOIO_TOKEN` (passed as environment variables)
 
-The workflow handles sensitive data via GitHub Secrets:
-- `GEOLITE2_TOKEN`: For MaxMind GeoLite2 API
-- `IP2LOCATION_TOKEN`: For IP2Location API
-- `IPINFOIO_TOKEN`: For IPinfo.io API
+## Key Docs
 
-## Output Format Details
-
-### TXT Format
-Simple CIDR notation, one range per line:
-```text
-1.2.3.0/24
-2001:db8::/32
-```
-
-### DAT Format
-Binary format for V2Ray compatible tools
-- Generated using `geoip` tool with JSON configuration
-- Separate files for IPv4, IPv6, and combined
-
-### MMDB Format
-MaxMind database format
-- Generated using `geoip` tool with JSON configuration
-- Compatible with standard MMDB readers
-- Separate files for IPv4, IPv6, and combined
+- [README.md](README.md) — download links and format descriptions (Chinese)
+- `script/*.json` — geoip conversion templates

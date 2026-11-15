@@ -1,6 +1,7 @@
 # CNIPDb
 
 [![License](https://img.shields.io/badge/License-Apache%202.0--Commons%20Clause-blue)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
 ## 项目简介
 
@@ -12,7 +13,7 @@ CNIPDb是一个中国IP地址数据库聚合项目，从多个公开数据源收
 - **自动更新**：通过GitHub Actions每日自动更新，确保数据时效性
 - **多种格式**：支持TXT、DAT（V2Ray）和MMDB（MaxMind）三种输出格式
 - **双协议支持**：同时支持IPv4和IPv6地址段
-- **高效处理**：使用专业工具进行CIDR块合并和优化
+- **高效处理**：Python 原生合并 CIDR 块（`ipaddress`），并行下载数据源，仅依赖 `geoip` 做格式转换
 
 ## 文件下载
 
@@ -60,11 +61,24 @@ MaxMind数据库格式：
 - 支持多种编程语言的库
 - 适用于高并发查询场景
 
+## 本地构建
+
+```bash
+git clone https://github.com/hezhijie0327/CNIPDb.git
+cd CNIPDb
+
+# 需要 geoip 工具（DAT/MMDB 转换）：go install github.com/Loyalsoldier/geoip@latest
+# 令牌源通过环境变量注入（可选，缺省时跳过对应数据源）
+GEOLITE2_TOKEN=... IP2LOCATION_TOKEN=... IPINFOIO_TOKEN=... python3 build.py
+```
+
+依赖：Python 3.9+（仅标准库）、`geoip`（Go）、`git`。
+
 ## 项目结构
 
 ```text
 CNIPDb/
-├── release.sh          # 主构建脚本
+├── build.py            # 主构建脚本（Python 3.9+，标准库）
 ├── script/             # JSON配置模板
 │   ├── ipv4.json       # IPv4转换配置
 │   ├── ipv6.json       # IPv6转换配置
