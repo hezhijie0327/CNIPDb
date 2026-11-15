@@ -1,5 +1,7 @@
 # CNIPDb
 
+[![License](https://img.shields.io/badge/License-Apache%202.0--Commons%20Clause-blue)](LICENSE)
+
 ## 项目简介
 
 CNIPDb是一个中国IP地址数据库聚合项目，从多个公开数据源收集中国IP地址段，并提供多种格式的输出，适用于不同的应用场景。开发规范见 [AGENTS.md](AGENTS.md)。
