@@ -4,7 +4,7 @@
       "action": "add",
       "args": {
         "name": "cn",
-        "uri": "../sources/TARGET/cn-all.txt"
+        "uri": "../dist/TARGET/cn-all.txt"
       },
       "type": "text"
     }
@@ -13,7 +13,7 @@
     {
       "action": "output",
       "args": {
-        "outputDir": "../sources/TARGET",
+        "outputDir": "../dist/TARGET",
         "outputName": "cn-all.dat"
       },
       "type": "v2rayGeoIPDat"
@@ -21,7 +21,7 @@
     {
       "action": "output",
       "args": {
-        "outputDir": "../sources/TARGET",
+        "outputDir": "../dist/TARGET",
         "outputName": "cn-all.mmdb"
       },
       "type": "maxmindMMDB"

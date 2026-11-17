@@ -135,7 +135,7 @@ python3 -c "import build; build.get_data_from_bgp(); build.environment_cleanup()
 ## Architecture
 
 1. **Collection**: each `get_data_from_<source>()` downloads its URLs in parallel, extracts Chinese ranges and splits IPv4/IPv6.
-2. **Merge**: `merge()` collapses and sorts networks; `write_txt()` writes `cn-ipv4.txt`, `cn-ipv6.txt`, `cn-all.txt` into `sources/<source>/`.
+2. **Merge**: `merge()` collapses and sorts networks; `write_txt()` writes `cn-ipv4.txt`, `cn-ipv6.txt`, `cn-all.txt` into `dist/<source>/`.
 3. **Conversion**: `environment_cleanup()` runs `geoip convert` for every source TXT file that changed according to `git status`, writing DAT/MMDB next to the TXT. There is no aggregated output; consumers pick a source.
 
 ## Conventions
@@ -149,12 +149,12 @@ python3 -c "import build; build.get_data_from_bgp(); build.environment_cleanup()
 ### Gotchas
 - `geoip` embeds a `build_epoch` timestamp in MMDB output: two runs never produce byte-identical `.mmdb` files. Compare MMDB data with the epoch masked.
 - `geoip` exits non-zero on empty input ("entry CN has no prefix"); the build ignores that exit code, like the original.
-- `geoip convert` resolves the `../sources/<name>` paths in `templates/*.json` relative to `./Temp`; the config path passed to it must be absolute, and `TARGET` in a template is the placeholder replaced with the source name.
+- `geoip convert` resolves the `../dist/<name>` paths in `templates/*.json` relative to `./Temp`; the config path passed to it must be absolute, and `TARGET` in a template is the placeholder replaced with the source name.
 - CIDR merging is done by `ipaddress`, not `cidr-merger`; output ordering is `(version, network_address, prefixlen)`, verified byte-identical to `cidr-merger -s`.
 - IP2Location IPv4-mapped IPv6 ranges (`::ffff:`) are dropped, like the original `grep -v '^::ffff:'`.
 
 ### File Naming
-- Source directories: `sources/<source>`
+- Output directories: `dist/<source>`
 - Output files: `cn-<ipv4|ipv6|all>.<txt|dat|mmdb>`; IPv4-only sources (btpanel, ipipdotnet, openipdb) only have `cn-ipv4.*`
 
 ## Dependencies

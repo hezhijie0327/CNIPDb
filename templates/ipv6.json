@@ -4,7 +4,7 @@
       "action": "add",
       "args": {
         "name": "cn",
-        "uri": "../sources/TARGET/cn-ipv6.txt"
+        "uri": "../dist/TARGET/cn-ipv6.txt"
       },
       "type": "text"
     }
@@ -14,7 +14,7 @@
       "action": "output",
       "args": {
         "onlyIPType": "ipv6",
-        "outputDir": "../sources/TARGET",
+        "outputDir": "../dist/TARGET",
         "outputName": "cn-ipv6.dat"
       },
       "type": "v2rayGeoIPDat"
@@ -23,7 +23,7 @@
       "action": "output",
       "args": {
         "onlyIPType": "ipv6",
-        "outputDir": "../sources/TARGET",
+        "outputDir": "../dist/TARGET",
         "outputName": "cn-ipv6.mmdb"
       },
       "type": "maxmindMMDB"

@@ -17,7 +17,7 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent
-SOURCE_DIR = ROOT / "sources"
+DIST_DIR = ROOT / "dist"
 
 BGP_URL = (
     "https://raw.githubusercontent.com/gaoyifan/china-operator-ip/ip-lists/china6.txt",
@@ -154,7 +154,7 @@ def try_zip(data):
 # Get Data from BGP
 def get_data_from_bgp():
     ipv4, ipv6 = split_lines(fetch(BGP_URL).decode("utf-8", errors="replace"))
-    write_txt(SOURCE_DIR / "bgp", parse_networks(ipv4), parse_networks(ipv6))
+    write_txt(DIST_DIR / "bgp", parse_networks(ipv4), parse_networks(ipv6))
 
 
 # Get Data from BTPanel
@@ -166,7 +166,7 @@ def get_data_from_btpanel():
     networks = []
     for start, end in data:
         networks.extend(range_networks(".".join(map(str, start)), ".".join(map(str, end))))
-    write_txt(SOURCE_DIR / "btpanel", ipv4=networks, ipv6_enabled=False)
+    write_txt(DIST_DIR / "btpanel", ipv4=networks, ipv6_enabled=False)
 
 
 # Get Data from DBIP
@@ -185,14 +185,14 @@ def get_data_from_dbip():
             target.extend(range_networks(start, end))
         except ValueError:
             continue
-    write_txt(SOURCE_DIR / "dbip", ipv4, ipv6)
+    write_txt(DIST_DIR / "dbip", ipv4, ipv6)
 
 
 # Get Data from GeoLite2
 def get_data_from_geolite2():
     archive = try_zip(fetch(GEOLITE2_URL))
     if archive is None:
-        write_txt(SOURCE_DIR / "geolite2")
+        write_txt(DIST_DIR / "geolite2")
         return
     ipv4, ipv6 = [], []
     for name in archive.namelist():
@@ -205,7 +205,7 @@ def get_data_from_geolite2():
         for line in archive.read(name).decode("utf-8", errors="replace").split("\n"):
             if "1814991,1814991" in line:
                 target.extend(parse_networks([line.split(",")[0]]))
-    write_txt(SOURCE_DIR / "geolite2", ipv4, ipv6)
+    write_txt(DIST_DIR / "geolite2", ipv4, ipv6)
 
 
 # Get Data from IANA
@@ -220,14 +220,14 @@ def get_data_from_iana():
         elif "CN|ipv6" in line:
             fields = line.split("|")
             ipv6.extend(parse_networks([f"{fields[3]}/{fields[4]}"]))
-    write_txt(SOURCE_DIR / "iana", ipv4, ipv6)
+    write_txt(DIST_DIR / "iana", ipv4, ipv6)
 
 
 # Get Data from IP2Location
 def get_data_from_ip2location():
     archive = try_zip(fetch(IP2LOCATION_URL))
     if archive is None:
-        write_txt(SOURCE_DIR / "ip2location")
+        write_txt(DIST_DIR / "ip2location")
         return
     ipv4, ipv6 = [], []
     for name in archive.namelist():
@@ -249,7 +249,7 @@ def get_data_from_ip2location():
                 continue
     # IPv4-mapped IPv6 ranges are dropped, like grep -v '^::ffff:'
     ipv6 = [n for n in ipv6 if not str(n).startswith("::ffff:")]
-    write_txt(SOURCE_DIR / "ip2location", ipv4, ipv6)
+    write_txt(DIST_DIR / "ip2location", ipv4, ipv6)
 
 
 # Get Data from IPinfo.io
@@ -268,20 +268,20 @@ def get_data_from_ipinfoio():
             target.extend(range_networks(start, end))
         except ValueError:
             continue
-    write_txt(SOURCE_DIR / "ipinfoio", ipv4, ipv6)
+    write_txt(DIST_DIR / "ipinfoio", ipv4, ipv6)
 
 
 # Get Data from IPdeny
 def get_data_from_ipdeny():
     ipv4, ipv6 = split_lines(fetch(IPDENY_URL).decode("utf-8", errors="replace"))
-    write_txt(SOURCE_DIR / "ipdeny", parse_networks(ipv4), parse_networks(ipv6))
+    write_txt(DIST_DIR / "ipdeny", parse_networks(ipv4), parse_networks(ipv6))
 
 
 # Get Data from IPIPdotNET
 def get_data_from_ipipdotnet():
     text = fetch(IPIPDOTNET_URL).decode("utf-8", errors="replace")
     ipv4 = [line for line in text.split("\n") if line and ":" not in line]
-    write_txt(SOURCE_DIR / "ipipdotnet", ipv4=parse_networks(ipv4), ipv6_enabled=False)
+    write_txt(DIST_DIR / "ipipdotnet", ipv4=parse_networks(ipv4), ipv6_enabled=False)
 
 
 # Get Data from IPtoASN
@@ -299,13 +299,13 @@ def get_data_from_iptoasn():
                 target.extend(range_networks(fields[0], fields[1]))
             except ValueError:
                 continue
-    write_txt(SOURCE_DIR / "iptoasn", ipv4, ipv6)
+    write_txt(DIST_DIR / "iptoasn", ipv4, ipv6)
 
 
 # Get Data from OpenIPDB
 def get_data_from_openipdb():
     text = fetch(OPENIPDB_URL).decode("utf-8", errors="replace")
-    write_txt(SOURCE_DIR / "openipdb", ipv4=parse_networks(text.split("\n")), ipv6_enabled=False)
+    write_txt(DIST_DIR / "openipdb", ipv4=parse_networks(text.split("\n")), ipv6_enabled=False)
 
 
 # Environment Cleanup: convert changed source txt files to DAT/MMDB
@@ -320,9 +320,9 @@ def environment_cleanup():
             continue
         path = parts[-1]
         for ip_type, txt in (("ipv4", "cn-ipv4.txt"), ("ipv6", "cn-ipv6.txt"), ("all", "cn-all.txt")):
-            if path.startswith("sources/") and path.endswith(txt):
+            if path.startswith("dist/") and path.endswith(txt):
                 changed.add((path.split("/")[1], ip_type))
-    # geoip resolves the "../sources/<name>" paths in templates/*.json from the
+    # geoip resolves the "../dist/<name>" paths in templates/*.json from the
     # current directory, so the rendered config runs from ./Temp next to the
     # repo root; TARGET in a template is the placeholder for the source name
     temp_dir = ROOT / "Temp"

@@ -17,21 +17,21 @@ CNIPDb是一个中国IP地址数据库项目，从多个公开数据源收集中
 
 ## 文件下载
 
-所有数据源位于 `sources/<数据源>/`，文件命名统一：`cn-ipv4`（IPv4）、`cn-ipv6`（IPv6）、`cn-all`（IPv4+IPv6合并），格式为 `.txt` / `.dat`（V2Ray）/ `.mmdb`（MaxMind）。BTPanel、IPIPdotNET、OpenIPDB 仅提供 IPv4。按需选择数据源下载：
+所有数据源位于 `dist/<数据源>/`，文件命名统一：`cn-ipv4`（IPv4）、`cn-ipv6`（IPv6）、`cn-all`（IPv4+IPv6合并），格式为 `.txt` / `.dat`（V2Ray）/ `.mmdb`（MaxMind）。BTPanel、IPIPdotNET、OpenIPDB 仅提供 IPv4。按需选择数据源下载：
 
 | 数据源 | IPv4 | IPv6 | IPv4+IPv6 |
 |---|---|---|---|
-| [BGP](sources/bgp/) | [txt](sources/bgp/cn-ipv4.txt) / [dat](sources/bgp/cn-ipv4.dat) / [mmdb](sources/bgp/cn-ipv4.mmdb) | [txt](sources/bgp/cn-ipv6.txt) / [dat](sources/bgp/cn-ipv6.dat) / [mmdb](sources/bgp/cn-ipv6.mmdb) | [txt](sources/bgp/cn-all.txt) / [dat](sources/bgp/cn-all.dat) / [mmdb](sources/bgp/cn-all.mmdb) |
-| [BTPanel](sources/btpanel/) | [txt](sources/btpanel/cn-ipv4.txt) / [dat](sources/btpanel/cn-ipv4.dat) / [mmdb](sources/btpanel/cn-ipv4.mmdb) | - | - |
-| [DB-IP](sources/dbip/) | [txt](sources/dbip/cn-ipv4.txt) / [dat](sources/dbip/cn-ipv4.dat) / [mmdb](sources/dbip/cn-ipv4.mmdb) | [txt](sources/dbip/cn-ipv6.txt) / [dat](sources/dbip/cn-ipv6.dat) / [mmdb](sources/dbip/cn-ipv6.mmdb) | [txt](sources/dbip/cn-all.txt) / [dat](sources/dbip/cn-all.dat) / [mmdb](sources/dbip/cn-all.mmdb) |
-| [GeoLite2](sources/geolite2/) | [txt](sources/geolite2/cn-ipv4.txt) / [dat](sources/geolite2/cn-ipv4.dat) / [mmdb](sources/geolite2/cn-ipv4.mmdb) | [txt](sources/geolite2/cn-ipv6.txt) / [dat](sources/geolite2/cn-ipv6.dat) / [mmdb](sources/geolite2/cn-ipv6.mmdb) | [txt](sources/geolite2/cn-all.txt) / [dat](sources/geolite2/cn-all.dat) / [mmdb](sources/geolite2/cn-all.mmdb) |
-| [IANA](sources/iana/) | [txt](sources/iana/cn-ipv4.txt) / [dat](sources/iana/cn-ipv4.dat) / [mmdb](sources/iana/cn-ipv4.mmdb) | [txt](sources/iana/cn-ipv6.txt) / [dat](sources/iana/cn-ipv6.dat) / [mmdb](sources/iana/cn-ipv6.mmdb) | [txt](sources/iana/cn-all.txt) / [dat](sources/iana/cn-all.dat) / [mmdb](sources/iana/cn-all.mmdb) |
-| [IP2Location](sources/ip2location/) | [txt](sources/ip2location/cn-ipv4.txt) / [dat](sources/ip2location/cn-ipv4.dat) / [mmdb](sources/ip2location/cn-ipv4.mmdb) | [txt](sources/ip2location/cn-ipv6.txt) / [dat](sources/ip2location/cn-ipv6.dat) / [mmdb](sources/ip2location/cn-ipv6.mmdb) | [txt](sources/ip2location/cn-all.txt) / [dat](sources/ip2location/cn-all.dat) / [mmdb](sources/ip2location/cn-all.mmdb) |
-| [IPdeny](sources/ipdeny/) | [txt](sources/ipdeny/cn-ipv4.txt) / [dat](sources/ipdeny/cn-ipv4.dat) / [mmdb](sources/ipdeny/cn-ipv4.mmdb) | [txt](sources/ipdeny/cn-ipv6.txt) / [dat](sources/ipdeny/cn-ipv6.dat) / [mmdb](sources/ipdeny/cn-ipv6.mmdb) | [txt](sources/ipdeny/cn-all.txt) / [dat](sources/ipdeny/cn-all.dat) / [mmdb](sources/ipdeny/cn-all.mmdb) |
-| [IPinfo.io](sources/ipinfoio/) | [txt](sources/ipinfoio/cn-ipv4.txt) / [dat](sources/ipinfoio/cn-ipv4.dat) / [mmdb](sources/ipinfoio/cn-ipv4.mmdb) | [txt](sources/ipinfoio/cn-ipv6.txt) / [dat](sources/ipinfoio/cn-ipv6.dat) / [mmdb](sources/ipinfoio/cn-ipv6.mmdb) | [txt](sources/ipinfoio/cn-all.txt) / [dat](sources/ipinfoio/cn-all.dat) / [mmdb](sources/ipinfoio/cn-all.mmdb) |
-| [IPIPdotNET](sources/ipipdotnet/) | [txt](sources/ipipdotnet/cn-ipv4.txt) / [dat](sources/ipipdotnet/cn-ipv4.dat) / [mmdb](sources/ipipdotnet/cn-ipv4.mmdb) | - | - |
-| [IPtoASN](sources/iptoasn/) | [txt](sources/iptoasn/cn-ipv4.txt) / [dat](sources/iptoasn/cn-ipv4.dat) / [mmdb](sources/iptoasn/cn-ipv4.mmdb) | [txt](sources/iptoasn/cn-ipv6.txt) / [dat](sources/iptoasn/cn-ipv6.dat) / [mmdb](sources/iptoasn/cn-ipv6.mmdb) | [txt](sources/iptoasn/cn-all.txt) / [dat](sources/iptoasn/cn-all.dat) / [mmdb](sources/iptoasn/cn-all.mmdb) |
-| [OpenIPDB](sources/openipdb/) | [txt](sources/openipdb/cn-ipv4.txt) / [dat](sources/openipdb/cn-ipv4.dat) / [mmdb](sources/openipdb/cn-ipv4.mmdb) | - | - |
+| [BGP](dist/bgp/) | [txt](dist/bgp/cn-ipv4.txt) / [dat](dist/bgp/cn-ipv4.dat) / [mmdb](dist/bgp/cn-ipv4.mmdb) | [txt](dist/bgp/cn-ipv6.txt) / [dat](dist/bgp/cn-ipv6.dat) / [mmdb](dist/bgp/cn-ipv6.mmdb) | [txt](dist/bgp/cn-all.txt) / [dat](dist/bgp/cn-all.dat) / [mmdb](dist/bgp/cn-all.mmdb) |
+| [BTPanel](dist/btpanel/) | [txt](dist/btpanel/cn-ipv4.txt) / [dat](dist/btpanel/cn-ipv4.dat) / [mmdb](dist/btpanel/cn-ipv4.mmdb) | - | - |
+| [DB-IP](dist/dbip/) | [txt](dist/dbip/cn-ipv4.txt) / [dat](dist/dbip/cn-ipv4.dat) / [mmdb](dist/dbip/cn-ipv4.mmdb) | [txt](dist/dbip/cn-ipv6.txt) / [dat](dist/dbip/cn-ipv6.dat) / [mmdb](dist/dbip/cn-ipv6.mmdb) | [txt](dist/dbip/cn-all.txt) / [dat](dist/dbip/cn-all.dat) / [mmdb](dist/dbip/cn-all.mmdb) |
+| [GeoLite2](dist/geolite2/) | [txt](dist/geolite2/cn-ipv4.txt) / [dat](dist/geolite2/cn-ipv4.dat) / [mmdb](dist/geolite2/cn-ipv4.mmdb) | [txt](dist/geolite2/cn-ipv6.txt) / [dat](dist/geolite2/cn-ipv6.dat) / [mmdb](dist/geolite2/cn-ipv6.mmdb) | [txt](dist/geolite2/cn-all.txt) / [dat](dist/geolite2/cn-all.dat) / [mmdb](dist/geolite2/cn-all.mmdb) |
+| [IANA](dist/iana/) | [txt](dist/iana/cn-ipv4.txt) / [dat](dist/iana/cn-ipv4.dat) / [mmdb](dist/iana/cn-ipv4.mmdb) | [txt](dist/iana/cn-ipv6.txt) / [dat](dist/iana/cn-ipv6.dat) / [mmdb](dist/iana/cn-ipv6.mmdb) | [txt](dist/iana/cn-all.txt) / [dat](dist/iana/cn-all.dat) / [mmdb](dist/iana/cn-all.mmdb) |
+| [IP2Location](dist/ip2location/) | [txt](dist/ip2location/cn-ipv4.txt) / [dat](dist/ip2location/cn-ipv4.dat) / [mmdb](dist/ip2location/cn-ipv4.mmdb) | [txt](dist/ip2location/cn-ipv6.txt) / [dat](dist/ip2location/cn-ipv6.dat) / [mmdb](dist/ip2location/cn-ipv6.mmdb) | [txt](dist/ip2location/cn-all.txt) / [dat](dist/ip2location/cn-all.dat) / [mmdb](dist/ip2location/cn-all.mmdb) |
+| [IPdeny](dist/ipdeny/) | [txt](dist/ipdeny/cn-ipv4.txt) / [dat](dist/ipdeny/cn-ipv4.dat) / [mmdb](dist/ipdeny/cn-ipv4.mmdb) | [txt](dist/ipdeny/cn-ipv6.txt) / [dat](dist/ipdeny/cn-ipv6.dat) / [mmdb](dist/ipdeny/cn-ipv6.mmdb) | [txt](dist/ipdeny/cn-all.txt) / [dat](dist/ipdeny/cn-all.dat) / [mmdb](dist/ipdeny/cn-all.mmdb) |
+| [IPinfo.io](dist/ipinfoio/) | [txt](dist/ipinfoio/cn-ipv4.txt) / [dat](dist/ipinfoio/cn-ipv4.dat) / [mmdb](dist/ipinfoio/cn-ipv4.mmdb) | [txt](dist/ipinfoio/cn-ipv6.txt) / [dat](dist/ipinfoio/cn-ipv6.dat) / [mmdb](dist/ipinfoio/cn-ipv6.mmdb) | [txt](dist/ipinfoio/cn-all.txt) / [dat](dist/ipinfoio/cn-all.dat) / [mmdb](dist/ipinfoio/cn-all.mmdb) |
+| [IPIPdotNET](dist/ipipdotnet/) | [txt](dist/ipipdotnet/cn-ipv4.txt) / [dat](dist/ipipdotnet/cn-ipv4.dat) / [mmdb](dist/ipipdotnet/cn-ipv4.mmdb) | - | - |
+| [IPtoASN](dist/iptoasn/) | [txt](dist/iptoasn/cn-ipv4.txt) / [dat](dist/iptoasn/cn-ipv4.dat) / [mmdb](dist/iptoasn/cn-ipv4.mmdb) | [txt](dist/iptoasn/cn-ipv6.txt) / [dat](dist/iptoasn/cn-ipv6.dat) / [mmdb](dist/iptoasn/cn-ipv6.mmdb) | [txt](dist/iptoasn/cn-all.txt) / [dat](dist/iptoasn/cn-all.dat) / [mmdb](dist/iptoasn/cn-all.mmdb) |
+| [OpenIPDB](dist/openipdb/) | [txt](dist/openipdb/cn-ipv4.txt) / [dat](dist/openipdb/cn-ipv4.dat) / [mmdb](dist/openipdb/cn-ipv4.mmdb) | - | - |
 
 ## 格式说明
 
@@ -81,7 +81,7 @@ CNIPDb/
 │   ├── ipv4.json       # IPv4转换配置
 │   ├── ipv6.json       # IPv6转换配置
 │   └── all.json        # IPv4+IPv6转换配置
-├── sources/            # 各数据源输出（TXT + DAT + MMDB）
+├── dist/               # 各数据源输出（TXT + DAT + MMDB）
 └── .github/workflows/  # CI/CD配置
     └── main.yml         # 自动化工作流
 ```
