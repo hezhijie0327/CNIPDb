@@ -67,15 +67,10 @@ IPTOASN_URL = (
 OPENIPDB_URL = (
     "https://raw.githubusercontent.com/metowolf/iplist/master/data/country/CN.txt",
 )
-VXLINK_URL = (
-    "https://raw.githubusercontent.com/tmplink/IPDB/main/ipv4/cidr/CN.txt",
-    "https://raw.githubusercontent.com/tmplink/IPDB/main/ipv6/cidr/CN.txt",
-)
-
 # Sources merged into cnipdb_zjdb (everything except zjdb itself and btpanel)
 ZJDB_SOURCES = (
     "bgp", "dbip", "geolite2", "iana", "ip2location", "ipdeny",
-    "ipinfoio", "ipipdotnet", "iptoasn", "openipdb", "vxlink",
+    "ipinfoio", "ipipdotnet", "iptoasn", "openipdb",
 )
 
 
@@ -318,12 +313,6 @@ def get_data_from_openipdb():
     write_source("openipdb", ipv4=parse_networks(text.split("\n")), ipv6_enabled=False)
 
 
-# Get Data from VXLINK
-def get_data_from_vxlink():
-    ipv4, ipv6 = split_lines(fetch(VXLINK_URL).decode("utf-8", errors="replace"))
-    write_source("vxlink", parse_networks(ipv4), parse_networks(ipv6))
-
-
 # Environment Cleanup: merge all sources into cnipdb_zjdb, convert changed files
 def environment_cleanup():
     ipv4, ipv6 = [], []
@@ -376,7 +365,6 @@ def main():
     get_data_from_ipipdotnet()
     get_data_from_iptoasn()
     get_data_from_openipdb()
-    get_data_from_vxlink()
     environment_cleanup()
 
 

@@ -108,7 +108,7 @@ Family-wide Markdown rules, shared verbatim across all ZJ projects:
 ## Project
 
 CNIPDb is a data aggregation project that:
-- Collects IP data from multiple sources (BGP, BTPanel, DB-IP, GeoLite2, IANA, IP2Location, IPdeny, IPinfo.io, IPIPdotNET, IPtoASN, OpenIPDB, VXLINK)
+- Collects IP data from multiple sources (BGP, BTPanel, DB-IP, GeoLite2, IANA, IP2Location, IPdeny, IPinfo.io, IPIPdotNET, IPtoASN, OpenIPDB)
 - Merges adjacent/overlapping CIDR blocks natively in Python (`ipaddress.collapse_addresses`)
 - Outputs TXT, DAT (V2Ray) and MMDB (MaxMind) for IPv4, IPv6 and combined lists
 - Runs daily via GitHub Actions to keep data current
