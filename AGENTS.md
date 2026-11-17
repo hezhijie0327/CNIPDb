@@ -138,6 +138,14 @@ python3 -c "import build; build.get_data_from_bgp(); build.environment_cleanup()
 2. **Merge**: `merge()` collapses and sorts networks; `write_txt()` writes `cn-ipv4.txt`, `cn-ipv6.txt`, `cn-all.txt` into `dist/<source>/`.
 3. **Conversion**: `environment_cleanup()` runs `geoip convert` for every source TXT file that changed according to `git status`, writing DAT/MMDB next to the TXT. There is no aggregated output; consumers pick a source.
 
+```text
+CNIPDb/
+├── build.py            # build script (Python 3.9+, stdlib)
+├── templates/          # geoip conversion templates (TARGET placeholder)
+├── dist/<source>/      # published outputs: cn-{ipv4,ipv6,all}.{txt,dat,mmdb}
+└── .github/workflows/  # CI
+```
+
 ## Conventions
 
 ### Python (build.py)
