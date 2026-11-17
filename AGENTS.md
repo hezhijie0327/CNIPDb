@@ -1,6 +1,6 @@
 # AGENTS.md
 
-CNIPDb collects and aggregates Chinese IP ranges from multiple sources, providing them in TXT, DAT (V2Ray) and MMDB (MaxMind) formats. See [README.md](README.md) for download links and format descriptions.
+CNIPDb collects Chinese IP ranges from multiple sources and publishes each source independently in TXT, DAT (V2Ray) and MMDB (MaxMind) formats; consumers pick a source. See [README.md](README.md) for download links and format descriptions.
 
 ## HANDOVER.md
 
@@ -107,7 +107,7 @@ Family-wide Markdown rules, shared verbatim across all ZJ projects:
 
 ## Project
 
-CNIPDb is a data aggregation project that:
+CNIPDb is a multi-source IP data collection project that:
 - Collects IP data from multiple sources (BGP, BTPanel, DB-IP, GeoLite2, IANA, IP2Location, IPdeny, IPinfo.io, IPIPdotNET, IPtoASN, OpenIPDB)
 - Merges adjacent/overlapping CIDR blocks natively in Python (`ipaddress.collapse_addresses`)
 - Outputs TXT, DAT (V2Ray) and MMDB (MaxMind) for IPv4, IPv6 and combined lists
@@ -135,8 +135,8 @@ python3 -c "import build; build.get_data_from_bgp(); build.environment_cleanup()
 ## Architecture
 
 1. **Collection**: each `get_data_from_<source>()` downloads its URLs in parallel, extracts Chinese ranges and splits IPv4/IPv6.
-2. **Merge**: `merge()` collapses and sorts networks; `write_source()` writes `country_ipv4.txt`, `country_ipv6.txt`, `country_ipv4_6.txt` into `cnipdb_<source>/`.
-3. **Aggregation**: `environment_cleanup()` merges all sources (except `btpanel`) into `cnipdb_zjdb/`, then runs `geoip convert` for every source whose TXT files changed according to `git status`.
+2. **Merge**: `merge()` collapses and sorts networks; `write_txt()` writes `cn-ipv4.txt`, `cn-ipv6.txt`, `cn-all.txt` into `sources/<source>/`.
+3. **Conversion**: `environment_cleanup()` runs `geoip convert` for every source TXT file that changed according to `git status`, writing DAT/MMDB next to the TXT. There is no aggregated output; consumers pick a source.
 
 ## Conventions
 
@@ -149,13 +149,13 @@ python3 -c "import build; build.get_data_from_bgp(); build.environment_cleanup()
 ### Gotchas
 - `geoip` embeds a `build_epoch` timestamp in MMDB output: two runs never produce byte-identical `.mmdb` files. Compare MMDB data with the epoch masked.
 - `geoip` exits non-zero on empty input ("entry CN has no prefix"); the build ignores that exit code, like the original.
-- `geoip convert` resolves the `../cnipdb_*` paths in `script/*.json` relative to `./Temp`; the config path passed to it must be absolute.
+- `geoip convert` resolves the `../sources/<name>` paths in `templates/*.json` relative to `./Temp`; the config path passed to it must be absolute, and `TARGET` in a template is the placeholder replaced with the source name.
 - CIDR merging is done by `ipaddress`, not `cidr-merger`; output ordering is `(version, network_address, prefixlen)`, verified byte-identical to `cidr-merger -s`.
 - IP2Location IPv4-mapped IPv6 ranges (`::ffff:`) are dropped, like the original `grep -v '^::ffff:'`.
 
 ### File Naming
-- Data directories: `cnipdb_<source>`
-- Output files: `country_<ipv4|ipv6|ipv4_6>.<txt|dat|mmdb>`
+- Source directories: `sources/<source>`
+- Output files: `cn-<ipv4|ipv6|all>.<txt|dat|mmdb>`; IPv4-only sources (btpanel, ipipdotnet, openipdb) only have `cn-ipv4.*`
 
 ## Dependencies
 
@@ -166,7 +166,7 @@ python3 -c "import build; build.get_data_from_bgp(); build.environment_cleanup()
 ## Adding New Data Sources
 
 1. Add a `get_data_from_<source>()` function following the existing pattern
-2. Call it from `main()` and add the source name to `ZJDB_SOURCES` if it should feed `cnipdb_zjdb`
+2. Call it from `main()`
 3. Update this documentation and README.md
 
 ## GitHub Actions Integration
@@ -178,4 +178,4 @@ python3 -c "import build; build.get_data_from_bgp(); build.environment_cleanup()
 ## Key Docs
 
 - [README.md](README.md) — download links and format descriptions (Chinese)
-- `script/*.json` — geoip conversion templates
+- `templates/*.json` — geoip conversion templates (TARGET placeholder)

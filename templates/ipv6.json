@@ -4,7 +4,7 @@
       "action": "add",
       "args": {
         "name": "cn",
-        "uri": "../cnipdb_zjdb/country_ipv4.txt"
+        "uri": "../sources/TARGET/cn-ipv6.txt"
       },
       "type": "text"
     }
@@ -13,18 +13,18 @@
     {
       "action": "output",
       "args": {
-        "onlyIPType": "ipv4",
-        "outputDir": "../cnipdb_zjdb",
-        "outputName": "country_ipv4.dat"
+        "onlyIPType": "ipv6",
+        "outputDir": "../sources/TARGET",
+        "outputName": "cn-ipv6.dat"
       },
       "type": "v2rayGeoIPDat"
     },
     {
       "action": "output",
       "args": {
-        "onlyIPType": "ipv4",
-        "outputDir": "../cnipdb_zjdb",
-        "outputName": "country_ipv4.mmdb"
+        "onlyIPType": "ipv6",
+        "outputDir": "../sources/TARGET",
+        "outputName": "cn-ipv6.mmdb"
       },
       "type": "maxmindMMDB"
     }
